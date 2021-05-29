@@ -39,8 +39,8 @@ def parse_user_input(user_input):
 
     num_flights = sum([x.startswith('depart_airport') for x in user_input])
     for i in range(num_flights):
-        depart_time = user_input[f"depart_date{i}"] + " " + user_input[f"depart_time{i}"],
-        dest_time = user_input[f"dest_date{i}"] + " " + user_input[f"dest_time{i}"],
+        depart_time = user_input[f"depart_date{i}"] + " " + user_input[f"depart_time{i}"]
+        dest_time = user_input[f"dest_date{i}"] + " " + user_input[f"dest_time{i}"]
         flights.append(FlightInfo(user_input[f"depart_airport{i}"],
                                   user_input[f"dest_airport{i}"],
                                   user_input[f"airline{i}"],

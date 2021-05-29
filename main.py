@@ -141,9 +141,11 @@ def get_total_layout(n_travelers, n_flights, default_values, preview_msg):
                    sg.Frame("Details", get_price_detail_rows(default_values))])
 
     layout.append([sg.Button("Preview", key='preview'), sg.Button('WhatsApp', key='WhatsApp'), sg.Exit(),
+                   # sg.Button('en', key='en', size=(5,1)),
+                   # sg.Button('fr', key='fr', size=(5,1)),
                    sg.ReadFormButton('', key='en', border_width=0, image_subsample=20,button_color=sg.TRANSPARENT_BUTTON, image_filename=os.path.join('images', 'united-states.png')),
                    sg.ReadFormButton('', key='fr', border_width=0, image_subsample=20,button_color=sg.TRANSPARENT_BUTTON, image_filename=os.path.join('images', 'france.png')),
-                   sg.ReadFormButton('', key='he', border_width=0, image_subsample=20,button_color=sg.TRANSPARENT_BUTTON, image_filename=os.path.join('images', 'israel.png')),
+                   # sg.ReadFormButton('', key='he', border_width=0, image_subsample=20,button_color=sg.TRANSPARENT_BUTTON, image_filename=os.path.join('images', 'israel.png')),
                    sg.Text(LANGAUGES[default_values['lang']])])
 
     # Lay the input side by side to an output window

@@ -31,8 +31,8 @@ PLEASE_PAY_MSG_EN = {'en': f"Kindly reply to the content of this whatsapp messag
                      }
 
 PLEASE_PAY_AGAIN_MSG_EN = {'en': f"Thanks for replying to this whatsapp\n"
-                                 f"proposal with your today/immediate\n"
-                                 f"confirmation accordingly.",
+                                 f"proposal with your immediate\n"
+                                 f"confirmation.",
                            'fr': f"Merci de repondre en validant a l'immediat\n"
                                  f"l'emission du billet aux conditions mentionnées"
                            }
