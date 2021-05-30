@@ -67,20 +67,25 @@ def get_flight_input_frame(i, default_dict):
     ]]
     columns = [sg.Column(depart_col), sg.Column(dest_col), sg.Column(details_col)]
 
-    # add an amadeus parser above the columns
-    amadeus_row = [sg.Text("Amadeus code:", size=(W1,1)),
-                   sg.Input(key=f"amadeus_code{i}", size=(W2*8,1), default_text=default_dict[f"amadeus_code{i}"]),
-                   sg.Button('Insert', key=f"insert_{i}")]
-    rows = [amadeus_row, columns]
+
+    rows = [columns]
     return rows
 
 
 def get_flight_rows_3(n, default_dict):
     """Arange a frame of dynamic number of flight frames"""
-    all_rows = []
+    # add an amadeus parser above the columns
+    amadeus_row = [sg.Text("Amadeus code:", size=(W1,1)),
+                   sg.Multiline(enter_submits=False, autoscroll=True, visible=True, do_not_clear=True,
+                                key="amadeus_code", size=(W2*8,4), default_text=default_dict["amadeus_code"]),
+                   # sg.Input(key=f"amadeus_code", size=(W2*8,1), default_text=default_dict[f"amadeus_code"]),
+                   sg.Button('Insert', key=f"insert")]
+    all_rows = [amadeus_row]
+
     for i in range(n):
         frame = sg.Frame(f"Flight {i+1}", get_flight_input_frame(i, default_dict))
         all_rows.append([frame])
+
     all_rows.append([sg.Button('+', size=(5, 1), key='+flights')])
     # all_rows.append([sg.Column([[sg.Button('+', size=(15, 1), key='+flights')]], vertical_alignment='center', justification='center')])
     return all_rows
@@ -148,7 +153,7 @@ def get_total_layout(n_travelers, n_flights, default_values, preview_msg):
                    ])
 
     # Lay the input side by side to an output window
-    layout = [[sg.Column(layout), sg.Column([[sg.Multiline(size=(2*W1, 5*8 + (n_flights-1)*3*W2), default_text=preview_msg, key='output_window')]])]]
+    layout = [[sg.Column(layout), sg.Column([[sg.Multiline(size=(2*W1, 5*8 + (n_flights)*3), default_text=preview_msg, key='output_window')]])]]
 
     return layout
 
@@ -161,7 +166,7 @@ def main(fs):
     # sg.theme_previewer()
 
     n_travelers = 1
-    n_flights = 1
+    n_flights = 0
     default_values = defaultdict(lambda: None)
     default_values['lang'] = 'en'
     while True:
@@ -184,9 +189,9 @@ def main(fs):
             fs = fs * 2
         if event == 'res-':
             fs = fs // 2
-        if event.startswith('insert'):
-            index = event.split("_")[-1]
-            default_values.update(parse_amadeus_code(values[f"amadeus_code{index}"], index))
+        if event == 'insert':
+            default_values.update(parse_amadeus_code(values[f"amadeus_code"]))
+            n_flights = len([k for k in default_values if k.startswith('airline')])
         if event in LANGAUGES:
             default_values['lang'] = event
         if event in ['Exit', sg.WIN_CLOSED]:

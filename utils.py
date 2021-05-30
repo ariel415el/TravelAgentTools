@@ -4,27 +4,31 @@ import urllib.parse
 import PySimpleGUI as sg
 
 
-def parse_amadeus_code(code, flight_number):
+def parse_amadeus_code(code):
+    lines = code.split('\n')
     results = dict()
-    try:
-        words = code.split()
-        results[f"airline{flight_number}"] = words[0]
-        results[f"code{flight_number}"] = words[1]
-        # price_cide = words[2]
-        results[f"depart_date{flight_number}"] = words[3]
-        # day_code = words[4]
+    for i, line in enumerate(lines):
+        if not line:
+            continue
+        try:
+            words = line.split()
+            results[f"airline{i}"] = words[0]
+            results[f"code{i}"] = words[1]
+            # price_cide = words[2]
+            results[f"depart_date{i}"] = words[3]
+            # day_code = words[4]
 
-        results[f"depart_airport{flight_number}"] = words[5][:3]
-        results[f"dest_airport{flight_number}"] = words[5][3:]
-        # code_1 = words[6]
-        results[f"depart_time{flight_number}"] = f"{words[7][:2]}:{words[7][2:]}"
-        results[f"dest_time{flight_number}"] = f"{words[8][:2]}:{words[8][2:]}"
-        results[f"dest_date{flight_number}"] = words[9]
+            results[f"depart_airport{i}"] = words[5][:3]
+            results[f"dest_airport{i}"] = words[5][3:]
+            # code_1 = words[6]
+            results[f"depart_time{i}"] = f"{words[7][:2]}:{words[7][2:]}"
+            results[f"dest_time{i}"] = f"{words[8][:2]}:{words[8][2:]}"
+            results[f"dest_date{i}"] = words[9]
 
-        # code_2 = words[10]
-        # PNR = words[11]
-    except IndexError as e:
-        sg.Popup('Opps!', 'Bad amadeus code format!')
+            # code_2 = words[10]
+            # PNR = words[11]
+        except IndexError as e:
+            sg.Popup('Opps!', 'Bad amadeus code format!')
 
     return results
 

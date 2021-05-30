@@ -1,17 +1,16 @@
 import PySimpleGUI as sg
 
-layout = [
-    [sg.Frame("I'm a frame",[[sg.Button(button_text='Change size')]],key='body')]
-]
+layout = [[sg.Checkbox("Reject defaults", default=False, enable_events=True, key="reject")],
+          [sg.Text("Enter three values", visible=False, key="instruct")],
+          [sg.Multiline(enter_submits=False, autoscroll=True, visible=False, do_not_clear=True, key="override")]]
+layout += [[sg.Button('Read'), sg.Exit()]]
 
-window = sg.Window('Window',layout)
-window.finalize()
-
-
+window = sg.Window("Select inputs", layout)
 while True:
-    event, values = window.read()
-    if event in (None, 'Cancel'):
-        break
-    if event == 'Change size':
-        window['Change size'].set_size(size=(200, 200))
-        window.refresh()
+    event, values = window.Read()
+    print(values)
+    if values["reject"]:
+        window.Element('instruct').Update(visible=True)
+        window.Element('override').Update(visible=True)
+        if event is None or event == 'Exit':
+                break
