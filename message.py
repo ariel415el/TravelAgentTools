@@ -1,6 +1,14 @@
 from consts import *
 
 
+class Time:
+    def __init__(self, date, time_in_day):
+        self.date = date
+        self.time_in_day = time_in_day
+
+    def __str__(self):
+        return f"{self.date} {self.time_in_day}"
+
 class Traveler:
     def __init__(self, name, is_child):
         self.name = name
@@ -9,21 +17,18 @@ class Traveler:
 
 class FlightInfo:
     def __init__(self, airport_depart, airport_destination,
-                 airline, flight_code, time_departure, time_destination,
-                 seat):
+                 airline, flight_code, time_departure, time_destination):
         self.airport_depart = airport_depart
         self.airport_destination = airport_destination
         self.flight_code = flight_code
         self.airline = airline
         self.time_departure = time_departure
         self.time_destination = time_destination
-        self.seat = seat
 
     def get_flight_desc(self, lang):
-        return f"{FLIGHT[lang]}:  {self.airline}-{self.flight_code}\n" \
-               f"\tDeparture:  ({self.airport_depart}) {self.time_departure}\n" \
-               f"\tDestination: ({self.airport_destination}) {self.time_destination}\n" \
-               f"\t{SEAT[lang]}: {self.seat}"
+        return f"   {AIRLINES[self.airline]}-({self.airline}{self.flight_code})\n" \
+               f"   {AIRPORTS[self.airport_depart]} ({self.airport_depart}) -> {AIRPORTS[self.airport_destination]} ({(self.airport_destination)})\n" \
+               f"   {self.time_departure} - {self.time_destination}"
 
 
 class PriceMessage:
@@ -44,9 +49,11 @@ class PriceMessage:
         if len(self.flights) == 1:
             dest_str = ONE_WAY[self.lang]
         else:
-            dest_str = f"-> {self.flights[-1].airport_destination} "
+            dest_code = self.flights[-1].airport_destination
+            dest_str = f"-> {AIRPORTS[dest_code]} "
+        trip_str = [AIRPORTS[x.airport_depart] for x in self.flights]
         msg = f"{FLIGHT_DESC[self.lang]} {ROUND_TRIP[self.lang]}\n" \
-              f"{' -> '.join([x.airport_depart for x in self.flights])} {dest_str}\n"
+              f"{' -> '.join(trip_str)} {dest_str}\n"
         if len(self.travelers) > 1:
             msg += f"{TOGETHER[self.lang]} {','.join([x.name for x in self.travelers[1:]])}"
 
@@ -76,15 +83,24 @@ class PriceMessage:
 
         return msg
 
+    def flights_summary(self):
+        print_retour = True
+        msg = f"*{ITINERARY[self.lang]}*\n"
+        msg += f"{FLIGHT[self.lang]} {ALLER[self.lang]}\n"
+        for i, flight in enumerate(self.flights):
+            if i > 0:
+                if print_retour and flight.time_departure.date != self.flights[i-1].time_destination.date:
+                    msg += f"{FLIGHT[self.lang]} {RETOUR[self.lang]}\n"
+                    print_retour = False
+            msg += f"{flight.get_flight_desc(self.lang)}\n"
+        return msg
+
     def construct_msg(self):
         msg = f"{self.travelers[0].name}, Shalom!\n\n"
         msg += f"{self.deal_summary()}\n\n"
         msg += f"{PLEASE_PAY_MSG_EN[self.lang]}\n\n"
-        msg += f"*---------- {ITINERARY[self.lang]} -----------*\n"
 
-        for flight in self.flights:
-            msg += f"{flight.get_flight_desc(self.lang)}\n"
-        msg += "*--------------------------------*\n\n"
+        msg += f"{self.flights_summary()}\n\n"
 
         msg += f"{self.pricing_summary()}\n\n"
 
