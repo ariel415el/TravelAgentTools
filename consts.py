@@ -1,10 +1,17 @@
+import pandas as pd
+
 LANGAUGES = {'en': 'English', 'fr': 'Francais', 'he': 'עברית'}
 
 DAYS = {
     'en': ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     'fr': ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
-
 }
+
+ALLER = {'en':'Outbound flt.', 'fr':'Aller'}
+
+RETOUR = {'en':'Inbound flt.', 'fr':'Retour'}
+
+MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 ONE_WAY = {"en": 'O/w', 'fr': 'aller-simple'}
 
@@ -12,7 +19,7 @@ ROUND_TRIP = {'en': 'round-trip', 'fr': 'aller-retor'}
 
 TOGETHER = {'en': 'together with', 'fr': 'avec'}
 
-ITINERARY = {'en': 'Itinerary with', 'fr': 'itinéraire'}
+ITINERARY = {'en': 'Itinerary', 'fr': 'itinéraire'}
 
 FLIGHT_DESC = {'en': f"As per your request you'll find below\n"
                      f"my proposal for your upcoming fligh",
@@ -49,5 +56,16 @@ FAREWELL = {'en': f"Thanks,\nGad",
             'fr': f"Merci',\nGad"
             }
 
-AIRPORTS = ["TLV", "JFK", 'LHR', 'ORY']
-AIRLINES = ["LY", "AA", 'BA', 'AF']
+class KeyReturningDefaultdict:
+    def __init__(self, dict):
+        self.dict = dict
+    def __getitem__(self, key):
+        return self.dict[key] if key in self.dict else key
+
+airports_file = 'airport_filtered.csv'
+aiports_df = pd.read_csv(airports_file)
+AIRPORTS = KeyReturningDefaultdict(dict(zip(aiports_df['iata_code'], aiports_df['municipality'])))
+airlines_file = 'airlines.csv'
+airlines_df = pd.read_csv(airlines_file)
+AIRLINES = KeyReturningDefaultdict(dict(zip(airlines_df['iata'], airlines_df['name'])))
+
